@@ -1,7 +1,8 @@
 {
   "name": "eat-tomato",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "type": "module",
   "description": "番茄鐘桌面應用",
   "main": "dist-electron/main.js",
   "scripts": {
