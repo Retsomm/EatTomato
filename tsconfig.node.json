@@ -16,5 +16,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["vite.config.ts", "electron"]
+  "include": ["vite.config.mts", "electron"]
 }
