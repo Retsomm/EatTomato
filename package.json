@@ -1,7 +1,7 @@
 {
   "name": "eat-tomato",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "番茄鐘桌面應用",
   "main": "dist-electron/main.js",
   "scripts": {
@@ -35,7 +35,9 @@
       "icon": "electron/assets/logo.png"
     }
   },
-  "dependencies": {},
+  "dependencies": {
+    "electron-updater": "^6.8.3"
+  },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0",
     "@types/react": "^18.3.1",

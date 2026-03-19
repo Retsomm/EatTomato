@@ -1,5 +1,6 @@
-import { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain, screen } from 'electron'
+import { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain, screen, dialog } from 'electron'
 import path from 'path'
+import { autoUpdater } from 'electron-updater'
 import { getAllTodos, createTodo, addPomodoro, toggleComplete, deleteTodo } from './db'
 
 // vite-plugin-electron 在開發時會注入此環境變數
@@ -112,6 +113,32 @@ ipcMain.handle('window-toggle-pin', () => {
   return next
 })
 
+const setupAutoUpdater = () => {
+  if (devServerUrl) return // 開發模式不檢查更新
+
+  autoUpdater.checkForUpdatesAndNotify()
+
+  autoUpdater.on('update-available', () => {
+    dialog.showMessageBox({
+      type: 'info',
+      title: '發現新版本',
+      message: '有新版本可以更新，正在背景下載...',
+      buttons: ['確定'],
+    })
+  })
+
+  autoUpdater.on('update-downloaded', () => {
+    dialog.showMessageBox({
+      type: 'info',
+      title: '更新已下載完成',
+      message: '更新已下載完成，點擊「立即重啟」以套用更新。',
+      buttons: ['立即重啟', '稍後'],
+    }).then(({ response }) => {
+      if (response === 0) autoUpdater.quitAndInstall()
+    })
+  })
+}
+
 app.whenReady().then(() => {
   if (process.platform === 'darwin') {
     const dockIcon = nativeImage.createFromPath(getIconPath()).resize({ width: 512, height: 512 })
@@ -119,6 +146,7 @@ app.whenReady().then(() => {
   }
   createWindow()
   createTray()
+  setupAutoUpdater()
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
