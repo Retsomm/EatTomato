@@ -110,4 +110,13 @@ yarn build
 | Linux | `EatTomato-x.x.x.AppImage`（需在 Linux 上建置） |
 
 > macOS 打包未設定程式碼簽署，首次開啟時系統會出現安全性警告。
-> **解法**：右鍵點選 `.app` → 選「打開」→ 再次點「打開」，之後就不會再出現警告。
+>
+> **解法（終端機指令）**：
+> 1. 使用 Spotlight（`Cmd + 空白鍵`）搜尋並打開「終端機」
+> 2. 貼上以下指令並按 Enter：
+>    ```
+>    sudo xattr -rd com.apple.quarantine /Applications/EatTomato.app
+>    ```
+>    （若軟體不在應用程式資料夾，可貼上指令後加一個空格，再將軟體圖示拖入終端機視窗）
+> 3. 輸入 macOS 開機密碼（輸入時不會顯示字元，屬正常現象），按 Enter
+> 4. 關閉終端機，重新開啟 EatTomato
