@@ -109,4 +109,5 @@ yarn build
 | Windows | `EatTomato Setup x.x.x.exe`（需在 Windows 上建置） |
 | Linux | `EatTomato-x.x.x.AppImage`（需在 Linux 上建置） |
 
-> macOS 打包未設定程式碼簽署，若需分發給他人安裝，需申請 Apple Developer 憑證並設定 `CSC_LINK`。
+> macOS 打包未設定程式碼簽署，首次開啟時系統會出現安全性警告。
+> **解法**：右鍵點選 `.app` → 選「打開」→ 再次點「打開」，之後就不會再出現警告。

@@ -7,12 +7,16 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && electron-builder",
+    "release": "vite build && electron-builder --publish always",
     "preview": "vite preview"
   },
   "build": {
     "appId": "com.eattomato.app",
     "productName": "EatTomato",
     "files": ["dist/**/*", "dist-electron/**/*", "electron/assets/**/*"],
+    "publish": {
+      "provider": "github"
+    },
     "mac": {
       "target": "dmg",
       "icon": "electron/assets/logo.icns"
