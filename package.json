@@ -20,7 +20,8 @@
       "electron/assets/**/*"
     ],
     "publish": {
-      "provider": "github"
+      "provider": "github",
+      "releaseType": "release"
     },
     "mac": {
       "target": "dmg",

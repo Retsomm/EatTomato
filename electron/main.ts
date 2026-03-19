@@ -116,7 +116,9 @@ ipcMain.handle('window-toggle-pin', () => {
 const setupAutoUpdater = () => {
   if (devServerUrl) return // 開發模式不檢查更新
 
-  autoUpdater.checkForUpdatesAndNotify()
+  autoUpdater.on('error', (err) => {
+    console.error('自動更新錯誤:', err.message)
+  })
 
   autoUpdater.on('update-available', () => {
     dialog.showMessageBox({
@@ -136,6 +138,10 @@ const setupAutoUpdater = () => {
     }).then(({ response }) => {
       if (response === 0) autoUpdater.quitAndInstall()
     })
+  })
+
+  autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+    console.error('檢查更新失敗:', err.message)
   })
 }
 
