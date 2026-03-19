@@ -283,7 +283,7 @@ const App = () => {
   }
 
   const inputClass = 'w-16 text-center rounded-lg px-2 py-1 bg-white dark:bg-gray-700 text-gray-800 dark:text-white border border-gray-200 dark:border-transparent'
-  const btnSecondary = 'px-8 py-2 rounded-full font-semibold transition-colors bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-white'
+  const btnSecondary = 'px-8 py-2 rounded-full font-semibold transition-colors bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-white cursor-pointer'
 
   const currentDisplay =
     mode === 'clock' ? currentTime
@@ -303,17 +303,17 @@ const App = () => {
       <div className="no-drag absolute top-1 right-1 flex gap-0.5 z-10">
         <button
           onClick={async () => { const next = await window.electronAPI?.togglePin(); if (next !== undefined) setIsPinned(next) }}
-          className={`w-4 h-4 rounded-full text-[9px] leading-none transition-colors flex items-center justify-center ${isPinned ? 'bg-red-500 text-white' : 'bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300'}`}
+          className={`w-4 h-4 rounded-full text-[9px] leading-none transition-colors flex items-center justify-center cursor-pointer ${isPinned ? 'bg-red-500 text-white' : 'bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300'}`}
           title={isPinned ? '取消置頂' : '置頂'}
         >✦</button>
         <button
           onClick={async () => { const next = await window.electronAPI?.shrinkToggle(); if (next !== undefined) setIsShrunk(next) }}
-          className={`w-4 h-4 rounded-full text-[9px] leading-none transition-colors flex items-center justify-center ${isShrunk ? 'bg-blue-500 text-white' : 'bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300'}`}
+          className={`w-4 h-4 rounded-full text-[9px] leading-none transition-colors flex items-center justify-center cursor-pointer ${isShrunk ? 'bg-blue-500 text-white' : 'bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300'}`}
           title={isShrunk ? '還原' : '縮小'}
         >{isShrunk ? '▢' : '–'}</button>
         <button
           onClick={() => setIsDark(d => !d)}
-          className="w-4 h-4 rounded-full text-[9px] leading-none bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors flex items-center justify-center text-gray-600 dark:text-gray-300"
+          className="w-4 h-4 rounded-full text-[9px] leading-none bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors flex items-center justify-center text-gray-600 dark:text-gray-300 cursor-pointer"
         >{isDark ? '●' : '○'}</button>
       </div>
 
@@ -331,7 +331,7 @@ const App = () => {
           <div className="flex gap-2 mb-4">
             {(['clock', 'pomodoro', 'timer'] as Mode[]).map(m => (
               <button key={m} onClick={() => setMode(m)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${mode === m ? 'bg-red-500 text-white' : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 shadow-sm'}`}>
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${mode === m ? 'bg-red-500 text-white' : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 shadow-sm'}`}>
                 {m === 'clock' ? '時鐘' : m === 'pomodoro' ? '番茄鐘' : '計時器'}
               </button>
             ))}
@@ -347,13 +347,13 @@ const App = () => {
             <div className="flex flex-col items-center w-full flex-1 min-h-0 gap-2">
 
               {/* 時間設定列 */}
-              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+              <div className="flex items-center gap-2 text-md text-gray-500 dark:text-gray-400">
                 <div className="flex items-center gap-1">
                   <span>工作</span>
                   <input type="number" min="1" max="90" value={pomodoroMinutes}
                     disabled={pomodoroRunning}
                     onChange={e => setPomodoroMinutes(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-10 text-center rounded px-1 py-0.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-transparent text-gray-800 dark:text-white disabled:opacity-50"
+                    className="w-12 text-center rounded px-1 py-0.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-transparent text-gray-800 dark:text-white disabled:opacity-50"
                   />
                   <span>分</span>
                 </div>
@@ -363,7 +363,7 @@ const App = () => {
                   <input type="number" min="1" max="30" value={breakMinutes}
                     disabled={pomodoroRunning}
                     onChange={e => setBreakMinutes(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-10 text-center rounded px-1 py-0.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-transparent text-gray-800 dark:text-white disabled:opacity-50"
+                    className="w-12 text-center rounded px-1 py-0.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-transparent text-gray-800 dark:text-white disabled:opacity-50"
                   />
                   <span>分</span>
                 </div>
@@ -373,7 +373,7 @@ const App = () => {
                   <input type="number" min="1" max="60" value={longBreakMinutes}
                     disabled={pomodoroRunning}
                     onChange={e => setLongBreakMinutes(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-10 text-center rounded px-1 py-0.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-transparent text-gray-800 dark:text-white disabled:opacity-50"
+                    className="w-12 text-center rounded px-1 py-0.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-transparent text-gray-800 dark:text-white disabled:opacity-50"
                   />
                   <span>分</span>
                 </div>
@@ -397,14 +397,14 @@ const App = () => {
               </div>
 
               {/* 目前任務 */}
-              <div className="text-xs text-gray-500 dark:text-gray-400 h-4">
+              <div className="text-md text-gray-500 dark:text-gray-400 h-4 mb-3">
                 {activeTodoId ? `目前任務：${todos.find(t => t.id === activeTodoId)?.title ?? ''}` : '未選擇任務'}
               </div>
 
               {/* 控制按鈕 */}
               <div className="flex gap-2">
                 <button onClick={() => setPomodoroRunning(r => !r)} disabled={pomodoroSeconds === 0}
-                  className={`px-8 py-2 disabled:opacity-40 text-white rounded-full font-semibold transition-colors ${pomodoroPhase === 'break' ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'}`}>
+                  className={`px-8 py-2 disabled:opacity-40 text-white rounded-full font-semibold transition-colors cursor-pointer ${pomodoroPhase === 'break' ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'}`}>
                   {pomodoroRunning ? '暫停' : '開始'}
                 </button>
                 <button onClick={resetPomodoro} className={btnSecondary}>重置</button>
@@ -415,7 +415,7 @@ const App = () => {
 
               {/* 待辦清單 */}
               <div className="w-full flex-1 min-h-0 flex flex-col gap-2 overflow-hidden">
-                <div className="flex-1 overflow-y-auto flex flex-col gap-1 pr-1">
+                <div className="flex-1 overflow-y-auto flex flex-col gap-1 p-1">
                   {todos.length === 0 && (
                     <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-2">尚無待辦，新增一個吧</p>
                   )}
@@ -423,7 +423,7 @@ const App = () => {
                     <div key={todo.id} onClick={() => setActiveTodoId(todo.id === activeTodoId ? null : todo.id)}
                       className={`flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-colors ${todo.id === activeTodoId ? 'bg-red-100 dark:bg-red-900/40 ring-1 ring-red-400' : 'bg-white/60 dark:bg-gray-700/60 hover:bg-white dark:hover:bg-gray-700'}`}>
                       <button onClick={e => { e.stopPropagation(); handleToggleComplete(todo.id) }}
-                        className={`w-4 h-4 rounded-full border-2 shrink-0 transition-colors ${todo.completed ? 'bg-green-500 border-green-500' : 'border-gray-400 dark:border-gray-500'}`} />
+                        className={`w-4 h-4 rounded-full border-2 shrink-0 transition-colors cursor-pointer ${todo.completed ? 'bg-green-500 border-green-500' : 'border-gray-400 dark:border-gray-500'}`} />
                       <span className={`flex-1 text-sm truncate ${todo.completed ? 'line-through text-gray-400 dark:text-gray-500' : ''}`}>
                         {todo.title}
                       </span>
@@ -441,7 +441,7 @@ const App = () => {
                 </div>
 
                 {/* 新增輸入 */}
-                <div className="flex gap-2">
+                <div className="flex gap-2 px-1 my-1">
                   <input type="text" placeholder="新增待辦項目..." value={newTodoTitle}
                     onChange={e => setNewTodoTitle(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && addTodo()}
