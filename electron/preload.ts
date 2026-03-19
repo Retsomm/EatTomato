@@ -1,0 +1,13 @@
+import { contextBridge, ipcRenderer } from 'electron'
+
+contextBridge.exposeInMainWorld('electronAPI', {
+  shrinkToggle: () => ipcRenderer.invoke('window-shrink-toggle'),
+  togglePin: () => ipcRenderer.invoke('window-toggle-pin'),
+  todo: {
+    getAll: () => ipcRenderer.invoke('todo-get-all'),
+    create: (title: string) => ipcRenderer.invoke('todo-create', title),
+    addPomodoro: (id: number, minutes: number) => ipcRenderer.invoke('todo-add-pomodoro', id, minutes),
+    toggleComplete: (id: number) => ipcRenderer.invoke('todo-toggle-complete', id),
+    delete: (id: number) => ipcRenderer.invoke('todo-delete', id),
+  },
+})

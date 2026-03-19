@@ -1,0 +1,47 @@
+{
+  "name": "eat-tomato",
+  "private": true,
+  "version": "1.0.0",
+  "description": "番茄鐘桌面應用",
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && electron-builder",
+    "preview": "vite preview"
+  },
+  "build": {
+    "appId": "com.eattomato.app",
+    "productName": "EatTomato",
+    "files": ["dist/**/*", "dist-electron/**/*", "electron/assets/**/*"],
+    "mac": {
+      "target": "dmg",
+      "icon": "electron/assets/logo.icns"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "electron/assets/logo.png"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "electron/assets/logo.png"
+    }
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.0.0",
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "~5.6.2",
+    "vite": "^6.0.0",
+    "vite-plugin-electron": "^0.28.0",
+    "wait-on": "^8.0.0"
+  }
+}
