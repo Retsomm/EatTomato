@@ -339,7 +339,7 @@ const App = () => {
 
           {/* 時鐘模式 */}
           {mode === 'clock' && (
-            <div className="text-7xl font-mono tracking-widest">{currentTime}</div>
+            <div className="flex-1 flex items-center justify-center text-7xl font-mono tracking-widest">{currentTime}</div>
           )}
 
           {/* 番茄鐘模式 */}
@@ -447,7 +447,7 @@ const App = () => {
                     onKeyDown={e => e.key === 'Enter' && addTodo()}
                     className="flex-1 text-sm px-3 py-2 rounded-lg bg-white dark:bg-gray-700 border border-gray-200 dark:border-transparent text-gray-800 dark:text-white placeholder-gray-400 outline-none focus:ring-1 focus:ring-red-400" />
                   <button onClick={addTodo}
-                    className="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm transition-colors">+</button>
+                    className="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm transition-colors cursor-pointer">+</button>
                 </div>
               </div>
             </div>
@@ -455,7 +455,7 @@ const App = () => {
 
           {/* 自訂計時器模式 */}
           {mode === 'timer' && (
-            <div className="flex flex-col items-center gap-6">
+            <div className="flex-1 flex flex-col items-center justify-center gap-6">
               <div className="text-8xl font-mono tracking-widest text-blue-500 dark:text-blue-400">
                 {formatTime(timerSeconds)}
               </div>
