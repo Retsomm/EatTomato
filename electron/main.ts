@@ -136,7 +136,13 @@ const setupAutoUpdater = () => {
       message: '更新已下載完成，點擊「立即重啟」以套用更新。',
       buttons: ['立即重啟', '稍後'],
     }).then(({ response }) => {
-      if (response === 0) autoUpdater.quitAndInstall()
+      if (response === 0) {
+        autoUpdater.quitAndInstall(false, true)
+        setTimeout(() => {
+          BrowserWindow.getAllWindows().forEach(w => w.destroy())
+          app.quit()
+        }, 500)
+      }
     })
   })
 
