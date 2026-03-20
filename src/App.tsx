@@ -14,6 +14,7 @@ declare global {
     electronAPI?: {
       shrinkToggle: () => Promise<boolean>
       togglePin: () => Promise<boolean>
+      onUpdateStatus: (cb: (payload: { type: string; percent?: number }) => void) => void
       todo: {
         getAll: () => Promise<Todo[]>
         create: (title: string) => Promise<Todo>
@@ -103,6 +104,9 @@ const App = () => {
   const [isPinned, setIsPinned] = useState(false)
   const [isShrunk, setIsShrunk] = useState(false)
 
+  // 更新進度
+  const [updateStatus, setUpdateStatus] = useState<{ type: string; percent?: number } | null>(null)
+
   // Todo
   const [todos, setTodos] = useState<Todo[]>([])
   const [activeTodoId, setActiveTodoId] = useState<number | null>(null)
@@ -120,6 +124,13 @@ const App = () => {
   // 載入 todos
   useEffect(() => {
     window.electronAPI?.todo.getAll().then(setTodos)
+  }, [])
+
+  // 更新進度監聽
+  useEffect(() => {
+    window.electronAPI?.onUpdateStatus((payload) => {
+      setUpdateStatus(payload)
+    })
   }, [])
 
   // 深色模式
@@ -298,6 +309,25 @@ const App = () => {
     <div className="min-h-screen bg-linear-to-br from-orange-50 to-red-50 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-white flex flex-col items-center relative overflow-hidden">
       {/* 拖曳區域 */}
       <div className="drag-region absolute top-0 left-0 right-0 h-8" />
+
+      {/* 更新進度條 */}
+      {updateStatus && (
+        <div className="absolute top-8 left-0 right-0 z-50 px-3 py-1.5 bg-blue-600/90 text-white text-xs flex items-center gap-2">
+          {updateStatus.type === 'available' && <span>發現新版本，正在下載...</span>}
+          {updateStatus.type === 'progress' && (
+            <>
+              <span className="shrink-0">下載更新 {updateStatus.percent}%</span>
+              <div className="flex-1 bg-white/30 rounded-full h-1.5">
+                <div
+                  className="bg-white rounded-full h-1.5 transition-all"
+                  style={{ width: `${updateStatus.percent}%` }}
+                />
+              </div>
+            </>
+          )}
+          {updateStatus.type === 'downloaded' && <span>更新已下載完成，重啟後套用</span>}
+        </div>
+      )}
 
       {/* 右上角按鈕群 */}
       <div className="no-drag absolute top-1 right-1 flex gap-0.5 z-10">

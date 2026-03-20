@@ -116,6 +116,8 @@ ipcMain.handle('window-toggle-pin', () => {
 const setupAutoUpdater = () => {
   if (devServerUrl) return // 開發模式不檢查更新
 
+  autoUpdater.autoDownload = false // 等使用者確認才下載
+
   autoUpdater.on('error', (err) => {
     console.error('自動更新錯誤:', err.message)
   })
@@ -124,29 +126,35 @@ const setupAutoUpdater = () => {
     dialog.showMessageBox({
       type: 'info',
       title: '發現新版本',
-      message: '有新版本可以更新，正在背景下載...',
-      buttons: ['確定'],
-    })
-  })
-
-  autoUpdater.on('update-downloaded', () => {
-    dialog.showMessageBox({
-      type: 'info',
-      title: '更新已下載完成',
-      message: '更新已下載完成，點擊「立即重啟」以套用更新。',
-      buttons: ['立即重啟', '稍後'],
+      message: '有新版本可用，是否立即更新？',
+      detail: '點擊「更新」將下載並安裝最新版本，完成後自動重啟。',
+      buttons: ['更新', '關閉'],
+      defaultId: 0,
+      cancelId: 1,
     }).then(({ response }) => {
       if (response === 0) {
-        autoUpdater.quitAndInstall(false, true)
-        setTimeout(() => {
-          BrowserWindow.getAllWindows().forEach(w => w.destroy())
-          app.quit()
-        }, 500)
+        win?.webContents.send('update-status', { type: 'available' })
+        autoUpdater.downloadUpdate()
       }
     })
   })
 
-  autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+  autoUpdater.on('download-progress', (progress) => {
+    win?.webContents.send('update-status', { type: 'progress', percent: Math.round(progress.percent) })
+  })
+
+  autoUpdater.on('update-downloaded', () => {
+    win?.webContents.send('update-status', { type: 'downloaded' })
+    // 下載完成後直接關閉並安裝，不再詢問
+    app.removeAllListeners('window-all-closed')
+    BrowserWindow.getAllWindows().forEach(w => {
+      w.removeAllListeners('close')
+      w.destroy()
+    })
+    autoUpdater.quitAndInstall(false, true)
+  })
+
+  autoUpdater.checkForUpdates().catch((err) => {
     console.error('檢查更新失敗:', err.message)
   })
 }
