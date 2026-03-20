@@ -38,7 +38,7 @@ const createWindow = () => {
 
 const createTray = () => {
   try {
-    const icon = nativeImage.createFromPath(getIconPath())
+    const icon = nativeImage.createFromPath(getIconPath()).resize({ width: 16, height: 16 })
     tray = new Tray(icon)
     tray.setToolTip('EatTomato 番茄鐘')
 
