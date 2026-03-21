@@ -14,6 +14,7 @@ declare global {
     electronAPI?: {
       shrinkToggle: () => Promise<boolean>
       togglePin: () => Promise<boolean>
+      showNotification: (title: string, body: string) => Promise<void>
       onUpdateStatus: (cb: (payload: { type: string; percent?: number }) => void) => void
       todo: {
         getAll: () => Promise<Todo[]>
@@ -47,19 +48,6 @@ const formatTime = (seconds: number) => {
 
 const formatMinutes = (min: number) => min >= 60 ? `${Math.floor(min / 60)}h${min % 60 > 0 ? `${min % 60}m` : ''}` : `${min}分`
 
-const playBeep = () => {
-  const ctx = new AudioContext()
-  const osc = ctx.createOscillator()
-  const gain = ctx.createGain()
-  osc.connect(gain)
-  gain.connect(ctx.destination)
-  osc.type = 'sine'
-  osc.frequency.value = 880
-  gain.gain.setValueAtTime(0.4, ctx.currentTime)
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5)
-  osc.start(ctx.currentTime)
-  osc.stop(ctx.currentTime + 1.5)
-}
 
 const loadStorage = <T,>(key: string, fallback: T): T => {
   try {
@@ -186,9 +174,9 @@ const App = () => {
       setPomodoroSeconds(prev => {
         if (prev <= 1) {
           setPomodoroRunning(false)
-          playBeep()
           if (pomodoroPhase === 'work') {
             completedWorkMinutes.current = pomodoroMinutes
+            window.electronAPI?.showNotification('番茄鐘完成！', `專注了 ${pomodoroMinutes} 分鐘，休息一下吧。`)
             if (isShrunk) {
               setPendingModal(true)
             } else {
@@ -198,6 +186,7 @@ const App = () => {
             }
           } else {
             // 休息結束，切回工作等待使用者按開始
+            window.electronAPI?.showNotification('休息結束！', '準備好了嗎？開始下一個番茄鐘吧。')
             setPomodoroPhase('work')
             setIsLongBreak(false)
             return pomodoroMinutes * 60
@@ -217,7 +206,7 @@ const App = () => {
       setTimerSeconds(prev => {
         if (prev <= 1) {
           setTimerRunning(false)
-          playBeep()
+          window.electronAPI?.showNotification('計時結束！', '計時器已到時。')
           return 0
         }
         return prev - 1
@@ -349,8 +338,28 @@ const App = () => {
 
       {/* 縮小模式 */}
       {isShrunk && (
-        <div className={`flex-1 flex items-center justify-center text-2xl font-mono tracking-widest ${displayColor}`}>
-          {currentDisplay}
+        <div className="flex-1 flex flex-col items-center justify-center gap-2">
+          <div className={`text-2xl font-mono tracking-widest ${displayColor}`}>
+            {currentDisplay}
+          </div>
+          {mode === 'pomodoro' && (
+            <button
+              onClick={() => setPomodoroRunning(r => !r)}
+              disabled={pomodoroSeconds === 0}
+              className={`px-4 py-1 rounded-full text-xs font-semibold text-white transition-colors disabled:opacity-40 cursor-pointer ${pomodoroPhase === 'break' ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'}`}
+            >
+              {pomodoroRunning ? '暫停' : '開始'}
+            </button>
+          )}
+          {mode === 'timer' && (
+            <button
+              onClick={() => setTimerRunning(r => !r)}
+              disabled={timerSeconds === 0}
+              className="px-4 py-1 rounded-full text-xs font-semibold text-white bg-blue-500 hover:bg-blue-600 transition-colors disabled:opacity-40 cursor-pointer"
+            >
+              {timerRunning ? '暫停' : '開始'}
+            </button>
+          )}
         </div>
       )}
 

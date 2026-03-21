@@ -3,7 +3,9 @@ import { contextBridge, ipcRenderer } from 'electron'
 contextBridge.exposeInMainWorld('electronAPI', {
   shrinkToggle: () => ipcRenderer.invoke('window-shrink-toggle'),
   togglePin: () => ipcRenderer.invoke('window-toggle-pin'),
+  showNotification: (title: string, body: string) => ipcRenderer.invoke('show-notification', title, body),
   onUpdateStatus: (cb: (payload: { type: string; percent?: number }) => void) => {
+    ipcRenderer.removeAllListeners('update-status')
     ipcRenderer.on('update-status', (_e, payload) => cb(payload))
   },
   todo: {

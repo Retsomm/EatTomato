@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain, screen, dialog } from 'electron'
+import { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain, screen, dialog, Notification } from 'electron'
 import path from 'path'
 import { autoUpdater } from 'electron-updater'
 import { getAllTodos, createTodo, addPomodoro, toggleComplete, deleteTodo } from './db'
@@ -6,7 +6,11 @@ import { getAllTodos, createTodo, addPomodoro, toggleComplete, deleteTodo } from
 // vite-plugin-electron 在開發時會注入此環境變數
 const devServerUrl = process.env['VITE_DEV_SERVER_URL']
 
-const getIconPath = () => path.join(app.getAppPath(), 'electron/assets/logo_macos.png')
+let _iconPath: string | null = null
+const getIconPath = () => {
+  if (!_iconPath) _iconPath = path.join(app.getAppPath(), 'electron/assets/logo_macos.png')
+  return _iconPath
+}
 
 let win: BrowserWindow | null = null
 let tray: Tray | null = null
@@ -106,6 +110,12 @@ ipcMain.handle('todo-add-pomodoro', (_e, id: number, minutes: number) => addPomo
 ipcMain.handle('todo-toggle-complete', (_e, id: number) => toggleComplete(id))
 ipcMain.handle('todo-delete', (_e, id: number) => { deleteTodo(id) })
 
+ipcMain.handle('show-notification', (_e, title: string, body: string) => {
+  if (Notification.isSupported()) {
+    new Notification({ title, body }).show()
+  }
+})
+
 ipcMain.handle('window-toggle-pin', () => {
   if (!win) return false
   const next = !win.isAlwaysOnTop()
@@ -154,9 +164,12 @@ const setupAutoUpdater = () => {
     autoUpdater.quitAndInstall(false, true)
   })
 
-  autoUpdater.checkForUpdates().catch((err) => {
-    console.error('檢查更新失敗:', err.message)
-  })
+  // 延遲 3 秒後再檢查更新，降低啟動時主程序負載
+  setTimeout(() => {
+    autoUpdater.checkForUpdates().catch((err) => {
+      console.error('檢查更新失敗:', err.message)
+    })
+  }, 3000)
 }
 
 app.whenReady().then(() => {
