@@ -8,7 +8,10 @@ const devServerUrl = process.env['VITE_DEV_SERVER_URL']
 
 let _iconPath: string | null = null
 const getIconPath = () => {
-  if (!_iconPath) _iconPath = path.join(app.getAppPath(), 'electron/assets/logo_macos.png')
+  if (!_iconPath) {
+    const iconFile = process.platform === 'darwin' ? 'logo_macos.png' : 'logo.png'
+    _iconPath = path.join(app.getAppPath(), 'electron/assets', iconFile)
+  }
   return _iconPath
 }
 
